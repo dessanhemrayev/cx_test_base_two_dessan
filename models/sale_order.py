@@ -1,3 +1,4 @@
+import logging
 from odoo import api, fields, models
 
 
@@ -5,16 +6,16 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     sequence = fields.Integer(
-        default=9999,
-        string="Sequence old",
+                            default=9999,
+                            string="Sequence",
+                            )
+
+    line_number = fields.Integer(
+        related="sequence",
+        string="Line Number",
+        readonly=True,
     )
 
-    new_sequence = fields.Integer(
-        related="sequence",
-        string="Sequence",
-        readonly=True,
-        store=True,
-    )
 
     @api.model
     def create(self, values):
@@ -22,6 +23,18 @@ class SaleOrderLine(models.Model):
         if self.env.context.get("keep_line_sequence"):
             line.order_id._reset_sequence()
         return line
+
+    def write(self, line_values):
+        res = super(SaleOrderLine, self).write(line_values)
+        if 'sequence' in line_values.keys():
+            self._reset_sequence()
+        return res
+
+    def unlink(self):
+        order_id = self.order_id
+        super(SaleOrderLine, self).unlink()
+        order_id._reset_sequence()
+        return True
 
 
 class SaleOrder(models.Model):
@@ -33,8 +46,10 @@ class SaleOrder(models.Model):
             sale.max_line_sequence = max(sale.mapped("order_line.sequence") or [0]) + 1
 
     max_line_sequence = fields.Integer(
-        string="Max sequence in lines", compute="_compute_max_line_sequence", store=True
-    )
+                                        string="Max sequence in lines", 
+                                        compute="_compute_max_line_sequence", 
+                                        store=True
+                                        )
 
 
     def _reset_sequence(self):
@@ -48,7 +63,8 @@ class SaleOrder(models.Model):
 
     def write(self, line_values):
         res = super(SaleOrder, self).write(line_values)
-        self._reset_sequence()
+        if 'order_line' in line_values.keys():
+            self._reset_sequence()
         return res
 
 
