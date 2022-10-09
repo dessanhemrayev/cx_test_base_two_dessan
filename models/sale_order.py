@@ -27,7 +27,7 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine, self).write(line_values)
         if 'sequence' in line_values.keys():
             for item in self:
-                item._reset_sequence()
+                item.order_id._reset_sequence()
         return res
 
     def unlink(self):
