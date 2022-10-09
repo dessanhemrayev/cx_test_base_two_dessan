@@ -65,7 +65,8 @@ class SaleOrder(models.Model):
     def write(self, line_values):
         res = super(SaleOrder, self).write(line_values)
         if 'order_line' in line_values.keys():
-            self._reset_sequence()
+            for item in self:
+                item._reset_sequence()
         return res
 
 
