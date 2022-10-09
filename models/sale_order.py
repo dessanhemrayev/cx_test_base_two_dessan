@@ -1,4 +1,3 @@
-import logging
 from odoo import api, fields, models
 
 
@@ -27,13 +26,15 @@ class SaleOrderLine(models.Model):
     def write(self, line_values):
         res = super(SaleOrderLine, self).write(line_values)
         if 'sequence' in line_values.keys():
-            self._reset_sequence()
+            for item in self:
+                item._reset_sequence()
         return res
 
     def unlink(self):
-        order_id = self.order_id
+        order_ids = self.mapped('order_id')
         super(SaleOrderLine, self).unlink()
-        order_id._reset_sequence()
+        for item in order_ids:
+            item._reset_sequence()
         return True
 
 
