@@ -25,15 +25,15 @@ class SaleOrderTransactionCase(TransactionCase):
         with form.order_line.new() as line:
             line.product_id = self.product_product_test_1
             line.price_unit = 500
-            line.product_qty = 5.0
+            line.product_uom_qty = 5.0
         with form.order_line.new() as line:
             line.product_id = self.product_product_test_2
             line.price_unit = 100
-            line.product_qty = 3.0
+            line.product_uom_qty = 3.0
         with form.order_line.new() as line:
             line.product_id = self.product_product_test_3
             line.price_unit = 50
-            line.product_qty = 1.0  
+            line.product_uom_qty = 1.0  
         self.sale_order_form1 = form.save()
 
 
