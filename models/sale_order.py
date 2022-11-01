@@ -11,14 +11,13 @@ class SaleOrderLine(models.Model):
         compute = 'compute_line_number',
         # store = True
     )
-
-    def compute_line_number(self):
-        for order in self.mapped('order_id'):
+    
+    @api.depends('order_id.order_line')
+    def _compute_line_number(self):
+        order_ids = self.mapped('order_id')
+        for order in order_ids:
             count = 1
             for line in order.order_line:
                 line.line_number = count
                 line.sequence = count
                 count += 1
-
-    
-
