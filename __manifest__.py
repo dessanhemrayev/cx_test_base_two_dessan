@@ -13,6 +13,6 @@
         "views/report_saleorder.xml"],
     "installable": True,
     "auto_install": False,
-    "post_init_hook": "post_init_hook",
+    # "post_init_hook": "post_init_hook",
     "application": False,
 }
